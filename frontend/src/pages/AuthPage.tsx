@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Mail, Sparkles, UserPlus } from 'lucide-react'
 import { signInWithEmail, signInWithGoogle, signUpWithEmail, resetPassword } from '../services/firebaseService'
-import { auth, isFirebaseConfigured } from '../firebase'
+import { auth } from '../firebase'
 
 export default function AuthPage() {
   const navigate = useNavigate()
@@ -21,7 +21,11 @@ export default function AuthPage() {
     setLoading(true)
 
     try {
-      if (!isFirebaseConfigured || !auth) throw new Error('Firebase is not configured')
+      if (!auth) {
+        throw new Error(
+          'Firebase is not configured. Create frontend/.env using frontend/.env.example, set your VITE_FIREBASE_* credentials, and restart the dev server.',
+        )
+      }
       if (mode === 'signup') {
         await signUpWithEmail(email, password, name)
         setMessage('Account created. Please verify your email before continuing.')
